@@ -1,0 +1,17 @@
+{
+    "name": "sulu-index-now-bundle",
+    "license": "MIT",
+    "scripts": {
+        "lint": "eslint src",
+        "lint:fix": "eslint src --fix"
+    },
+    "peerDependencies": {
+        "mobx": "^4.0.0",
+        "mobx-react": "^5.0.0",
+        "react": "^16.0.0 || ^17.0.0 || ^18.0.0",
+        "sulu-admin-bundle": "*"
+    },
+    "main": "index.js",
+    "version": "0.1",
+    "files": ["src"]
+}

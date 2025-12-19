@@ -1,0 +1,13 @@
+services:
+    # default configuration for services in *this* file
+    _defaults:
+        autowire: true      # Automatically injects dependencies in your services.
+        autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+
+    Linderp\SuluIndexNowBundle\:
+        resource: '../../'
+        exclude:
+          - '../../Resources/'
+    Linderp\SuluIndexNowBundle\Controller\Admin\IndexNowController:
+        arguments:
+            - '%env(INDEX_NOW_API_KEY)%'
