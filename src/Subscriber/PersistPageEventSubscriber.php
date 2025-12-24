@@ -4,6 +4,7 @@ namespace Linderp\SuluIndexNowBundle\Subscriber;
 
 use Linderp\SuluIndexNowBundle\Service\HostExtractor;
 use Linderp\SuluIndexNowBundle\Service\IndexNowSubmitter;
+use Sulu\Bundle\PageBundle\Document\PageDocument;
 use Sulu\Component\DocumentManager\Event\PersistEvent;
 use Sulu\Component\DocumentManager\Event\PublishEvent;
 use Sulu\Component\DocumentManager\Events;
@@ -29,11 +30,12 @@ readonly class PersistPageEventSubscriber implements EventSubscriberInterface
     public function onPublish(PublishEvent $event): void
     {
         $document = $event->getDocument();
-        $request = $this->requestStack->getCurrentRequest();
-
-        $this->submitter->submit($this->hostExtractor->normalizeHost($request),$this->indexNowKey,[
-            $this->buildUrl($request,$document->getLocale(),$document->getResourceSegment()),
-        ]);
+        if($document instanceof PageDocument){
+            $request = $this->requestStack->getCurrentRequest();
+            $this->submitter->submit($this->hostExtractor->normalizeHost($request),$this->indexNowKey,[
+                $this->buildUrl($request,$event->getLocale(),$document->getResourceSegment()),
+            ]);
+        }
     }
     public function buildUrl(Request $request, string $locale, string $resourceSegment): string
     {
