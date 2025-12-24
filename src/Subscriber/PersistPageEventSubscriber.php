@@ -8,6 +8,7 @@ use Sulu\Bundle\PageBundle\Document\PageDocument;
 use Sulu\Component\DocumentManager\Event\PersistEvent;
 use Sulu\Component\DocumentManager\Event\PublishEvent;
 use Sulu\Component\DocumentManager\Events;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -15,6 +16,7 @@ use Symfony\Component\HttpFoundation\RequestStack;
 readonly class PersistPageEventSubscriber implements EventSubscriberInterface
 {
     public function __construct(
+        #[Autowire('%sulu_index_now.key%')]
         private string $indexNowKey,
         private IndexNowSubmitter $submitter,
         private HostExtractor $hostExtractor,

@@ -29,11 +29,20 @@ SuluIndexNowBundle:
     resource: "@SuluIndexNowBundle/Resources/config/routes_admin.yml"
 ```
 
-3. If you don't have the IndexNow setup already, generate your key [here](https://www.bing.com/indexnow/getstarted). Then follow the instructions and put the file in the /public folder:
-4. Extend your .env file
-```dotenv
-INDEX_NOW_API_KEY=xxx
-```
+3. If you don't have the IndexNow setup already, generate your key [here](https://www.bing.com/indexnow/getstarted). Then follow the instructions and put the file in the `public` folder:
+4. Add the file `config/packages/sulu_index_now.yaml` with the following configuration and replace #your key here with your actual key:
+```yaml
+sulu_index_now:
+    key: #your key here
+    search_engines:
+        IndexNow: 'https://api.indexnow.org/indexnow'
+        Amazon: 'https://indexnow.amazonbot.amazon/indexnow'
+        Bing: 'https://www.bing.com/indexnow'
+        Naver: 'https://searchadvisor.naver.com/indexnow'
+        Seznam: 'https://search.seznam.cz/indexnow'
+        Yandex: 'https://yandex.com/indexnow'
+        Yep: 'https://indexnow.yep.com/indexnow'
+``` 
 5. Reference the frontend code by adding the following to your `assets/admin/package.json`:
 
 ```json

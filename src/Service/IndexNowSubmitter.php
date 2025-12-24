@@ -1,23 +1,22 @@
 <?php
 
 namespace Linderp\SuluIndexNowBundle\Service;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 
-class IndexNowSubmitter
+readonly class IndexNowSubmitter
 {
-    private array $endpoints = [
-        'IndexNow'      => 'https://api.indexnow.org/indexnow',
-        'Amazon'        => 'https://indexnow.amazonbot.amazon/indexnow',
-        'Bing'          => 'https://www.bing.com/indexnow',
-        'Naver'         => 'https://searchadvisor.naver.com/indexnow',
-        'Seznam'        => 'https://search.seznam.cz/indexnow',
-        'Yandex'        => 'https://yandex.com/indexnow',
-        'Yep'           => 'https://indexnow.yep.com/indexnow',
-    ];
+    public function __construct(
+        #[Autowire('%sulu_index_now.search_engines%')]
+        private array $endpoints
+    )
+    {
+
+    }
 
     public function submit(string $host, string $key, array $urls): array
     {
