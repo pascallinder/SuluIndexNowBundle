@@ -1,6 +1,7 @@
 <?php
 
 namespace Linderp\SuluIndexNowBundle\Service;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
@@ -12,7 +13,8 @@ readonly class IndexNowSubmitter
 {
     public function __construct(
         #[Autowire('%sulu_index_now.search_engines%')]
-        private array $endpoints
+        private array           $endpoints,
+        private LoggerInterface $logger,
     )
     {
 
@@ -45,12 +47,17 @@ readonly class IndexNowSubmitter
                     'status' => $response->getStatusCode(),
                     'body'   => $response->getContent(false),
                 ];
-
+                $this->logger->debug('Index now submitted to: '.$endpoint . ', status: '.$response->getStatusCode());
             } catch (TransportExceptionInterface|RedirectionExceptionInterface|ClientExceptionInterface|ServerExceptionInterface $e) {
                 $responses[$name] = [
                     'status' => 'error',
                     'body'   => $e->getMessage(),
                 ];
+                $this->logger->error($e->getMessage(),[
+                    "payload" => $payload,
+                    "endpoint" => $endpoint,
+                    "name" => $name,
+                ]);
             }
         }
 
