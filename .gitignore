@@ -9,3 +9,5 @@
 /vendor/
 ###< symfony/framework-bundle ###
 /.idea
+/src/Resources/js/node_modules
+src/Resources/js/package-lock.json
