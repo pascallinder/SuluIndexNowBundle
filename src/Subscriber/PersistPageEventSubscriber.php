@@ -33,6 +33,10 @@ readonly class PersistPageEventSubscriber implements EventSubscriberInterface
     {
         $document = $event->getDocument();
         if($document instanceof PageDocument){
+            $extensions =  $document->getExtensionsData();
+            if (($extensions['seo']['noIndex'] ?? false) === true) {
+                return;
+            }
             $request = $this->requestStack->getCurrentRequest();
             $this->submitter->submit($this->hostExtractor->normalizeHost($request),$this->indexNowKey,[
                 $this->buildUrl($request,$event->getLocale(),$document->getResourceSegment()),
