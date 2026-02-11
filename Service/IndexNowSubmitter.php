@@ -11,8 +11,12 @@ use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 
 readonly class IndexNowSubmitter
 {
+    /**
+     * @param array<string, string> $endpoints
+     */
     public function __construct(
         #[Autowire('%sulu_index_now.search_engines%')]
+        /** @var array<string, string> */
         private array           $endpoints,
         private LoggerInterface $logger,
     )
@@ -20,6 +24,11 @@ readonly class IndexNowSubmitter
 
     }
 
+    /**
+     * @param array<int, string> $urls
+     *
+     * @return array<string, array{status: int|string, body: string}>
+     */
     public function submit(string $host, string $key, array $urls): array
     {
         if(empty($urls)) {

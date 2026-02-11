@@ -4,6 +4,7 @@ namespace Linderp\SuluIndexNowBundle\Subscriber;
 
 use Linderp\SuluIndexNowBundle\Service\HostExtractor;
 use Linderp\SuluIndexNowBundle\Service\IndexNowSubmitter;
+use Psr\Log\LoggerInterface;
 use Sulu\Bundle\PageBundle\Document\PageDocument;
 use Sulu\Component\DocumentManager\Event\PersistEvent;
 use Sulu\Component\DocumentManager\Event\PublishEvent;
@@ -24,7 +25,8 @@ readonly class PersistPageEventSubscriber implements EventSubscriberInterface
         private RequestStack $requestStack,
         private WebspaceManagerInterface $webspaceManager,
         #[Autowire('%kernel.environment%')]
-        private string $environment
+        private string $environment,
+        private LoggerInterface $logger
     )
     {}
     public static function getSubscribedEvents(): array
@@ -53,6 +55,11 @@ readonly class PersistPageEventSubscriber implements EventSubscriberInterface
                 $document->getWebspaceName()
             );
             if (!$url) {
+                $this->logger->warning('IndexNow URL resolution failed', [
+                    'locale' => $event->getLocale(),
+                    'resourceSegment' => $document->getResourceSegment(),
+                    'webspace' => $document->getWebspaceName(),
+                ]);
                 return;
             }
             $this->submitter->submit($this->hostExtractor->normalizeHost($request), $this->indexNowKey, [$url]);
