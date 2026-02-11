@@ -2,5 +2,3 @@ app:
     index_now_config_headline: IndexNow Dashboard
     index_now_config_description: Speeds up indexing of the website by search engines through immediate notification.
     index_now_start: Start IndexNow
-    index_now_error_loading: Failed to load URLs from the sitemap.
-    index_now_error_submit: Failed to submit URLs to IndexNow.

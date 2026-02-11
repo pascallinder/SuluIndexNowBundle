@@ -2,5 +2,3 @@ app:
     index_now_config_headline: IndexNow Dashboard
     index_now_config_description: Beschleunigt die Indexierung der Website in Suchmaschinen durch sofortige Benachrichtigung.
     index_now_start: IndexNow starten
-    index_now_error_loading: URLs konnten nicht aus der Sitemap geladen werden.
-    index_now_error_submit: URLs konnten nicht an IndexNow gesendet werden.
