@@ -8,6 +8,6 @@ class HostExtractor
 {
     public function normalizeHost(Request $request): string
     {
-        return preg_replace('/^www\./i', '', $request->getHost());
+        return $request->getHost();
     }
 }

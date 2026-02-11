@@ -47,7 +47,7 @@ sulu_index_now:
 
 ```json
 "dependencies": {
-    "sulu-index-now-bundle": "file:../../vendor/linderp/sulu-index-now-bundle/src/Resources/js"
+    "sulu-index-now-bundle": "file:../../vendor/linderp/sulu-index-now-bundle/Resources/js"
 }
 ```
 

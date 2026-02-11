@@ -8,6 +8,7 @@ use Sulu\Bundle\PageBundle\Document\PageDocument;
 use Sulu\Component\DocumentManager\Event\PersistEvent;
 use Sulu\Component\DocumentManager\Event\PublishEvent;
 use Sulu\Component\DocumentManager\Events;
+use Sulu\Component\Webspace\Manager\WebspaceManagerInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -20,7 +21,10 @@ readonly class PersistPageEventSubscriber implements EventSubscriberInterface
         private string $indexNowKey,
         private IndexNowSubmitter $submitter,
         private HostExtractor $hostExtractor,
-        private RequestStack $requestStack
+        private RequestStack $requestStack,
+        private WebspaceManagerInterface $webspaceManager,
+        #[Autowire('%kernel.environment%')]
+        private string $environment
     )
     {}
     public static function getSubscribedEvents(): array
@@ -38,13 +42,40 @@ readonly class PersistPageEventSubscriber implements EventSubscriberInterface
                 return;
             }
             $request = $this->requestStack->getCurrentRequest();
-            $this->submitter->submit($this->hostExtractor->normalizeHost($request),$this->indexNowKey,[
-                $this->buildUrl($request,$event->getLocale(),$document->getResourceSegment()),
-            ]);
+            if (!$request) {
+                // Publishing can happen without an HTTP request (CLI/worker); skip submission.
+                return;
+            }
+            $url = $this->buildUrl(
+                $request,
+                $event->getLocale(),
+                $document->getResourceSegment(),
+                $document->getWebspaceName()
+            );
+            if (!$url) {
+                return;
+            }
+            $this->submitter->submit($this->hostExtractor->normalizeHost($request), $this->indexNowKey, [$url]);
         }
     }
-    public function buildUrl(Request $request, string $locale, string $resourceSegment): string
+    public function buildUrl(
+        Request $request,
+        string $locale,
+        string $resourceSegment,
+        string $webspaceKey
+    ): ?string
     {
-        return $request->getScheme() . '://www.' . $this->hostExtractor->normalizeHost($request) .'/'.$locale.$resourceSegment;
+        if (!$resourceSegment) {
+            return null;
+        }
+
+        return $this->webspaceManager->findUrlByResourceLocator(
+            $resourceSegment,
+            $this->environment,
+            $locale,
+            $webspaceKey,
+            null,
+            $request->getScheme()
+        );
     }
 }
